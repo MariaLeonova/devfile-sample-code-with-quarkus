@@ -39,7 +39,7 @@ spec:
       - name: build-task-status
         value: $(tasks.build-container.status)
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-summary:0.1@sha256:c0f66b28c338426774e34a8d4a00349fbab798b19df5841a95727148d5ef3c65
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-summary:0.1@sha256:9d43202379cb83358942ce2e936c0297e30faaa0c73811324318c6260a6edc25
         name: summary
     params:
     - description: Source Repository URL
@@ -114,7 +114,7 @@ spec:
       - name: pipelinerun-uid
         value: $(context.pipelineRun.uid)
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-init:0.1@sha256:5ce77110e2a49407a69a7922042dc0859f7e8f5f75dc0cd0bcc2d17860469bdb
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-init:0.1@sha256:26586a7ef08c3e86dfdaf0a5cc38dd3d70c4c02db1331b469caaed0a0f5b3d86
         name: init
     - name: clone-repository
       params:
@@ -125,7 +125,7 @@ spec:
       runAfter:
       - init
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-git-clone:0.1@sha256:f4e37778cba00296606ddfbc1c58181330899cafcaa1ee41c75a7cf8bed312f0
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-git-clone:0.1@sha256:1f84973a21aabea38434b1f663abc4cb2d86565a9c7aae1f90decb43a8fa48eb
         name: git-clone
       when:
       - input: $(tasks.init.results.build)
@@ -144,7 +144,7 @@ spec:
       runAfter:
       - clone-repository
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-prefetch-dependencies:0.1@sha256:6090a9a142a1eefe30b098f41a48e0e6387e185892e5a7c004607efcbe986db9
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-prefetch-dependencies:0.1@sha256:c7b7f13d5d2a1545e95c2d56521327001d56ba54645900db41aa414607eff1e5
         name: prefetch-dependencies
       when:
       - input: $(params.hermetic)
@@ -171,7 +171,7 @@ spec:
       runAfter:
       - prefetch-dependencies
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-buildah:0.1@sha256:7c72b89f87b138e3543f96769047b3e6b8f5c5b0d325f61eb0c0711ecfdeb8ce
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-buildah:0.1@sha256:97f21661e237735af04b37feeeaedd328424bfa0ebd4cd0f79ac39cde17137f6
         name: buildah
       when:
       - input: $(tasks.init.results.build)
@@ -192,7 +192,7 @@ spec:
       runAfter:
       - build-container
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-inspect-image:0.1@sha256:ab8d8d2083f16f1e74cf971868d4dd350fc9749ba80119996dc11b98d3616ab9
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-inspect-image:0.1@sha256:7880c08c67e81f22d3de1d012905e5c9d333108188ceaea60b3a4c3857c2c4b7
         name: inspect-image
       when:
       - input: $(params.skip-checks)
@@ -206,7 +206,7 @@ spec:
       runAfter:
       - inspect-image
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-label-check:0.1@sha256:cbdc39e7462ed983d782827fbe135076450132f7476260b830b290c4067af7c5
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-label-check:0.1@sha256:0c0739fdda24cd1e3587bbab9b07d4493efc21884baac7723f4b446e95bf1fd3
         name: label-check
       when:
       - input: $(params.skip-checks)
@@ -223,7 +223,7 @@ spec:
       runAfter:
       - inspect-image
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-label-check:0.1@sha256:cbdc39e7462ed983d782827fbe135076450132f7476260b830b290c4067af7c5
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-label-check:0.1@sha256:0c0739fdda24cd1e3587bbab9b07d4493efc21884baac7723f4b446e95bf1fd3
         name: label-check
       when:
       - input: $(params.skip-checks)
@@ -238,7 +238,7 @@ spec:
       - name: BASE_IMAGES_DIGESTS
         value: $(tasks.build-container.results.BASE_IMAGES_DIGESTS)
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-deprecated-image-check:0.1@sha256:9263d860ffac00384de986e034755d1bbf80cd7b138d642c4b8d230946670f4d
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-deprecated-image-check:0.3@sha256:6df3f9a88242224048837a69e269d640799e7ee83984880ba2f57d8b0155990e
         name: deprecated-image-check
       when:
       - input: $(params.skip-checks)
@@ -259,7 +259,7 @@ spec:
       runAfter:
       - build-container
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-clair-scan:0.1@sha256:1b71542275a9ef3113524668d146154cbc8b16de7f6edf741d0dca7c40192c59
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-clair-scan:0.1@sha256:4d8588502c3265cca7c43f131d77661f9254b4b12e5af0cf093afcc464bfb850
         name: clair-scan
       when:
       - input: $(params.skip-checks)
@@ -273,7 +273,7 @@ spec:
       runAfter:
       - clone-repository
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-sast-snyk-check:0.1@sha256:caabbe332e8417c48f98eac8d58373df57a5d9d676815a6a152e0fed4102baa6
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-sast-snyk-check:0.1@sha256:ce73b27a7a345a99ff88a730388d938243678af42704da8db69387bdf547b8ad
         name: sast-snyk-check
       when:
       - input: $(params.skip-checks)
@@ -298,7 +298,7 @@ spec:
       runAfter:
       - build-container
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-clamav-scan:0.1@sha256:d01c942c140ef0264888bea2bb5c31c1044fdd6459aef3f23669b8518dc278d7
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-clamav-scan:0.1@sha256:d306ddf4680da906a21d8e72d991ca8d055b4fa24546be015d9e0d6d8ac89ef7
         name: clamav-scan
       when:
       - input: $(params.skip-checks)
@@ -314,7 +314,7 @@ spec:
       runAfter:
       - build-container
       taskRef:
-        bundle: quay.io/redhat-appstudio-tekton-catalog/task-sbom-json-check:0.1@sha256:32397db2f972c1bf9d2479f067d5169b65dec381f0152373c86b56bb4dab35e6
+        bundle: quay.io/redhat-appstudio-tekton-catalog/task-sbom-json-check:0.1@sha256:d8d114daa23c299aefecc9b5c8440f6cf3106635c92788b56208b41358e8f819
         name: sbom-json-check
       when:
       - input: $(params.skip-checks)
